@@ -27,13 +27,13 @@ function makeConnection(params) {
     connection.connect((err) => {
         if(err) {
             console.log('error when connecting to db :', err);
-            setTimeout(makeConnection, 2000);
+            setTimeout(()=>{makeConnection(params)}, 2000);
         }
     });
 
     connection.on('error', (err) => {
         if(err.code === 'PROTOCOL_CONNECTION_LOST')
-            makeConnection();
+            makeConnection(params);
         else
             throw err;
     });

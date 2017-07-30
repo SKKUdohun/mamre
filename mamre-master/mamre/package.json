@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node ./server",
-    "babel": "babel server -d build",
-    "test" : "node ./build/test.js"
+    "start": "node ./build/server.js",
+    "babel": "babel server -d build"
   },
   "author": "",
   "license": "ISC",
