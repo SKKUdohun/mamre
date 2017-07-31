@@ -9,7 +9,7 @@ const conn = mysql.getConnection;
 
 
 // 번호 입력후 가입 or 포인트 적립
-router.post('/',function(req,res){
+router.post('/save',function(req,res){
     console.log('a');
     let phone = req.body.phone;
     let yesno = 0;
@@ -29,7 +29,7 @@ router.post('/',function(req,res){
                         res.status(500).send('Internal Server Error');
                     }
                     else{
-                      res.send([point:result.point]);
+                      res.send({phone,point:result.point});
                     }
                 });
             }
@@ -44,7 +44,7 @@ router.post('/',function(req,res){
                     }
                     else{
                         // 적립 완료
-                        res.send([point:result.point]);
+                        res.send({phone,point:result.point});
                     }
                 });
             }
@@ -79,13 +79,16 @@ router.post('/delete',function(req,res){
     });
 });
 
-// 포인트 변경
+// 회원정보 수정 : 포인트 변경, 이름, 생일, 메모  변경
 router.post('/edit',function(req,res){
     let point = req.body.point;
     let phone = req.body.phone;
+    let birth = req.body.birth;
+    let name = req.body.name;
+    let discribe = req.body.discribe;
 
-    let sql = 'update customer set point = ? where phone = ?';
-    conn().query(sql,[point, phone],function(err, result, fields){
+    let sql = 'update customer set point = ?,birth =?,name=?, memo = ?  where phone = ?';
+    conn().query(sql,[point,birth,name,discribe,phone],function(err, result, fields){
         if(err){
             console.log(err);
             res.status(500).send('Internal Server Error');
@@ -107,6 +110,7 @@ router.get('/:phone',function(req,res){
         }
         else{
             res.json(member[0]);
+            //res.send({phone:member[0].phone, point:member[0].point});
         }
     })
 });
