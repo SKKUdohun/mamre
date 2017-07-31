@@ -29,7 +29,12 @@ router.post('/save',function(req,res){
                         res.status(500).send('Internal Server Error');
                     }
                     else{
-                      res.send({phone,point:result.point});
+                      res.json({
+                        name:result.name,
+                        phone:result.phone,
+                        point:result.point,
+                        birth:result.birth,
+                        memo:result.memo});
                     }
                 });
             }
@@ -85,10 +90,10 @@ router.post('/edit',function(req,res){
     let phone = req.body.phone;
     let birth = req.body.birth;
     let name = req.body.name;
-    let discribe = req.body.discribe;
+    let memo = req.body.memo;
 
     let sql = 'update customer set point = ?,birth =?,name=?, memo = ?  where phone = ?';
-    conn().query(sql,[point,birth,name,discribe,phone],function(err, result, fields){
+    conn().query(sql,[point,birth,name,memo,phone],function(err, result, fields){
         if(err){
             console.log(err);
             res.status(500).send('Internal Server Error');
