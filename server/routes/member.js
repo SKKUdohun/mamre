@@ -29,7 +29,7 @@ router.post('/save',function(req,res){
                         res.status(500).send('member 있을때err');
                     }
                     else{
-                      res.json(result);
+                      res.json(result[0]);
                     }
                 });
             }
@@ -44,7 +44,7 @@ router.post('/save',function(req,res){
                     }
                     else{
                         // 적립 완료
-                        res.send({phone,point:result.point});
+                        res.json(result[0]);
                     }
                 });
             }
