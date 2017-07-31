@@ -35,6 +35,7 @@ router.post('/save',function(req,res){
                         console.log(
                           member[0]
                         )
+                        res.json(member[0]);
                       });
                     }
                 });
