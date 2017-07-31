@@ -28,6 +28,9 @@ router.post('/',function(req,res){
                         console.log(err);
                         res.status(500).send('Internal Server Error');
                     }
+                    else{
+                      res.send([point:result.point]);
+                    }
                 });
             }
             // 폰 번호가 DB에 없으면 회원 등록, 포인트 1 적립
@@ -41,7 +44,7 @@ router.post('/',function(req,res){
                     }
                     else{
                         // 적립 완료
-                        res.send(적립);
+                        res.send([point:result.point]);
                     }
                 });
             }
