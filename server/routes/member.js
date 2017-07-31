@@ -26,7 +26,7 @@ router.post('/save',function(req,res){
                 conn().query(sql,[phone],function(err, result, fields){
                     if(err){
                         console.log(err);
-                        res.status(500).send('Internal Server Error');
+                        res.status(500).send('member 있을때err');
                     }
                     else{
                       res.json({
@@ -45,7 +45,7 @@ router.post('/save',function(req,res){
                 conn().query(sql, [phone, point],function(err,result,fields){
                     if(err){
                         console.log(err);
-                        res.status(500).send('Internal Server Error');
+                        res.status(500).send('멤버 없을때 err');
                     }
                     else{
                         // 적립 완료
