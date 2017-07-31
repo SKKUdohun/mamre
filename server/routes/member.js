@@ -29,7 +29,9 @@ router.post('/save',function(req,res){
                         res.status(500).send('member 있을때err');
                     }
                     else{
-                      res.json(result[0]);
+                      console.log(
+                        result
+                      );
                     }
                 });
             }
