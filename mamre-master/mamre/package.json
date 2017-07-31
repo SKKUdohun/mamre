@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "node ./build/server.js",
-    "babel": "babel server -d build"
+    "babel": "babel server -d build",
+    "bs" : "npm run babel && npm start"
   },
   "author": "",
   "license": "ISC",
