@@ -30,7 +30,7 @@ router.post('/save',function(req,res){
                     }
                     else{
                       console.log(
-                        result
+                        result[0]
                       );
                     }
                 });
