@@ -29,12 +29,7 @@ router.post('/save',function(req,res){
                         res.status(500).send('member 있을때err');
                     }
                     else{
-                      res.json({
-                        name:result.name,
-                        phone:result.phone,
-                        point:result.point,
-                        birth:result.birth,
-                        memo:result.memo});
+                      res.json(result);
                     }
                 });
             }
