@@ -29,12 +29,9 @@ router.post('/save',function(req,res){
                         res.status(500).send('member 있을때err');
                     }
                     else{
-                      console.log(fields);
                       let sql2='select * from customer where phone=?';
                       conn().query(sql2,[phone],function(err, member,fields){
-                        console.log(
-                          member[0]
-                        )
+
                         res.json(member[0]);
                       });
                     }
@@ -51,8 +48,12 @@ router.post('/save',function(req,res){
                     }
                     else{
                         // 적립
+                        let sql2='select * from customer where phone=?';
+                        conn().query(sql2,[phone],function(err, member,fields){
 
-                        res.json(result[0]);
+                          res.json(member[0]);
+                        });
+            
                     }
                 });
             }
