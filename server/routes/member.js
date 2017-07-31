@@ -17,7 +17,7 @@ router.post('/save',function(req,res){
     conn().query(sql, [phone],function(err, member, fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internar Server Error');
+            res.status(500).json({error:err, message:'save 오류'});
         }
         // 폰 번호가 DB에 있으면 포인트 추가
         else {
