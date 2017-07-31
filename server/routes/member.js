@@ -71,11 +71,9 @@ router.get('/all',(req,res) => {
             res.status(500).send('Internal Server Error');
         }
         else{
-            res.json(members);
+            res.json({list:members});
         }
-    })
-
-
+    });
 });
 
 // 삭제
@@ -84,7 +82,7 @@ router.post('/delete',function(req,res){
     let sql='delete from customer where phone=?';
     conn().query(sql,[phone],function(err,result){
         //삭제완료
-        res.send('삭제완료');
+        res.json({success:true})
     });
 });
 
@@ -96,7 +94,7 @@ router.post('/edit',function(req,res){
     let name = req.body.name;
     let memo = req.body.memo;
 
-    let sql = 'update customer set point = ?,birth =?,name=?, memo = ?  where phone = ?';
+    let sql = 'update customer set point=?,birth =?,name=?, memo = ?  where phone = ?';
     conn().query(sql,[point,birth,name,memo,phone],function(err, result, fields){
         if(err){
             console.log(err);

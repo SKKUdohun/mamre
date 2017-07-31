@@ -34,9 +34,13 @@ router.post('/save', function (req, res) {
                     conn().query(_sql, [phone], function (err, result, fields) {
                         if (err) {
                             console.log(err);
-                            res.status(500).send('Internal Server Error');
+                            res.status(500).send('member 있을때err');
                         } else {
-                            res.send({ phone: phone, point: result.point });
+                            var sql2 = 'select * from customer where phone=?';
+                            conn().query(sql2, [phone], function (err, member, fields) {
+
+                                res.json(member[0]);
+                            });
                         }
                     });
                 }
@@ -47,10 +51,14 @@ router.post('/save', function (req, res) {
                         conn().query(_sql2, [phone, point], function (err, result, fields) {
                             if (err) {
                                 console.log(err);
-                                res.status(500).send('Internal Server Error');
+                                res.status(500).send('멤버 없을때 err');
                             } else {
-                                // 적립 완료
-                                res.send({ phone: phone, point: result.point });
+                                // 적립
+                                var sql2 = 'select * from customer where phone=?';
+                                conn().query(sql2, [phone], function (err, member, fields) {
+
+                                    res.json(member[0]);
+                                });
                             }
                         });
                     }
@@ -88,10 +96,10 @@ router.post('/edit', function (req, res) {
     var phone = req.body.phone;
     var birth = req.body.birth;
     var name = req.body.name;
-    var discribe = req.body.discribe;
+    var memo = req.body.memo;
 
     var sql = 'update customer set point = ?,birth =?,name=?, memo = ?  where phone = ?';
-    conn().query(sql, [point, birth, name, discribe, phone], function (err, result, fields) {
+    conn().query(sql, [point, birth, name, memo, phone], function (err, result, fields) {
         if (err) {
             console.log(err);
             res.status(500).send('Internal Server Error');

@@ -58,7 +58,8 @@ app.listen(port, () => {
     console.log('SERVER PORT', port);
 });
 
-
+export default app;
+//for testing
 
 
 
