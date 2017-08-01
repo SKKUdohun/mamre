@@ -6,7 +6,7 @@
     "start": "node ./build/server.js",
     "babel": "babel server -d build",
     "bs": "npm run babel && npm start",
-    "test" : "mocha --compilers js:babel-core/register --recursive test"
+    "test": "mocha --compilers js:babel-core/register --recursive test"
   },
   "author": "",
   "license": "ISC",

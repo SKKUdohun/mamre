@@ -53,7 +53,7 @@ router.post('/save',function(req,res){
 
                           res.json(member[0]);
                         });
-            
+
                     }
                 });
             }
@@ -101,7 +101,7 @@ router.post('/edit',function(req,res){
             res.status(500).send('Internal Server Error');
         }
         else{
-            res.send('edit complete');
+            res.json({success:true});
         }
     });
 });
