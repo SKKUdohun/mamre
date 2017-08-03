@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 
 import {
     member
-} from '../../server/routes/index';
+} from '../../server/routes';
 
 //테스트 줄기 생성
 describe('Server API Test', function() {
