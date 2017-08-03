@@ -26,7 +26,7 @@ router.post('/save',function(req,res){
                 conn().query(sql,[phone],function(err, result, fields){
                     if(err){
                         console.log(err);
-                        res.status(500).send('member 있을때err');
+                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'};
                     }
                     else{
                       let sql2='select * from customer where phone=?';
@@ -44,7 +44,7 @@ router.post('/save',function(req,res){
                 conn().query(sql, [phone, point],function(err,result,fields){
                     if(err){
                         console.log(err);
-                        res.status(500).send('멤버 없을때 err');
+                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 없을 때)'});
                     }
                     else{
                         // 적립
@@ -68,7 +68,7 @@ router.get('/all',(req,res) => {
     conn().query(sql, function(err,members,fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({error:err, message:'전체 조회 오류'});
         }
         else{
             res.json({list:members});
@@ -81,8 +81,14 @@ router.post('/delete',function(req,res){
     let phone=req.body.phone;
     let sql='delete from customer where phone=?';
     conn().query(sql,[phone],function(err,result){
-        //삭제완료
-        res.json({success:true})
+      if(err){
+          console.log(err);
+          res.status(500).json({error:err, message:'삭제 오류'});
+      }
+      //삭제 완료
+      else{
+          res.json({success:true})
+      }
     });
 });
 
@@ -98,7 +104,7 @@ router.post('/edit',function(req,res){
     conn().query(sql,[point,birth,name,memo,phone],function(err, result, fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({error:err, message:'Edit DB query 오류'});
         }
         else{
             res.json({success:true});
@@ -113,11 +119,10 @@ router.get('/:phone',function(req,res){
     conn().query(sql,[phone],function(err,member,fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({error:err, message:'개별 조회 query 오류'});
         }
         else{
             res.json(member[0]);
-            //res.send({phone:member[0].phone, point:member[0].point});
         }
     })
 });
