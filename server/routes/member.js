@@ -10,6 +10,7 @@ const conn = mysql.getConnection;
 
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save',function(req,res){
+    console.log('a');
     let phone = req.body.phone;
     let yesno = 0;
     let sql = 'select * from customer where phone=?';
@@ -52,7 +53,7 @@ router.post('/save',function(req,res){
 
                           res.json(member[0]);
                         });
-            
+
                     }
                 });
             }
@@ -100,7 +101,8 @@ router.post('/edit',function(req,res){
             res.status(500).send('Internal Server Error');
         }
         else{
-            res.json({success:true})        }
+            res.json({success:true});
+        }
     });
 });
 
