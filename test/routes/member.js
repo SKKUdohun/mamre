@@ -128,6 +128,55 @@ describe('Server API Test', function() {
                     done();
                 });
         });
+
+
+        //********************** Error Test case *********************//
+        it('Too long number', function (done) {
+            chai.request(server)
+                .post('/api/member/save')
+                .send({'phone': '1029322930921'})
+                .end(function (err, res) {
+                    should.exist(res.body);
+                    res.should.have.status(500);
+                    res.body.should.be.a('object');
+                    //res.body.should.have.property('message').eql('save 오류');
+                    done();
+                });
+        });
+        it('Wrong phone insert type', function (done) {
+            chai.request(server)
+                .post('/api/member/save')
+                .send({'phone': '293*2930921'})
+                .end(function (err, res) {
+                    should.exist(res.body);
+                    res.should.have.status(500);
+                    res.body.should.be.a('object');
+                    done();
+                });
+        });
+        it('No information', function (done) {
+            chai.request(server)
+                .post('/api/member/save')
+                .send({'phone': ''})
+                .end(function (err, res) {
+                    should.exist(res.body);
+                    res.should.have.status(500);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('message').eql('save 오류');
+                    done();
+                });
+        });
+        it('Searching wrong number', function (done) { // /:phone error
+            chai.request(server)
+                .get('/api/member/******')
+                .end(function (err, res) {
+                    should.exist(res.body);
+                    res.should.have.status(500);
+                    res.body.should.be.a('object');
+                    done();
+                });
+        });
+        //****************************************************************//
     });
     after(function() {
         mysql.getConnection().end();

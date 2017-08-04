@@ -26,7 +26,7 @@ router.post('/save',function(req,res){
                 conn().query(sql,[phone],function(err, result, fields){
                     if(err){
                         console.log(err);
-                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'};
+                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'});
                     }
                     else{
                       let sql2='select * from customer where phone=?';
