@@ -8,6 +8,23 @@ const router = express.Router();
 const conn = mysql.getConnection;
 
 
+function changedate(member){
+  let newmember;
+
+  newmember.name= member.name;
+  newmember.phone= member.name;
+  if(member.birth){
+    newmember.birth = member.birth.getTime();
+  }
+  else{
+    newmember.birth = undefined;
+  }
+  newmember.memo= member.memo;
+  newmember.point= member.point;
+
+  return newmember;
+}
+
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save',function(req,res){
     console.log('a');
@@ -96,7 +113,12 @@ router.post('/delete',function(req,res){
 router.post('/edit',function(req,res){
     let point = req.body.point;
     let phone = req.body.phone;
-    let birth = req.body.birth;
+    let birth;
+    if(req.body.birth){
+      birth = new date(req.body.birth);
+    }else{
+      birth = undefined;
+    };
     let name = req.body.name;
     let memo = req.body.memo;
 
@@ -122,7 +144,7 @@ router.get('/:phone',function(req,res){
             res.status(500).json({error:err, message:'개별 조회 query 오류'});
         }
         else{
-            res.json(member[0]);
+            res.json(changedate(member[0]));
         }
     })
 });
