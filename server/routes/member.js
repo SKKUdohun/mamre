@@ -115,7 +115,7 @@ router.post('/edit',function(req,res){
     let phone = req.body.phone;
     let birth;
     if(req.body.birth){
-      birth = new date(req.body.birth);
+      birth = new Date(req.body.birth)
     }else{
       birth = undefined;
     };
