@@ -8,6 +8,23 @@ const router = express.Router();
 const conn = mysql.getConnection;
 
 
+function changedate(member){
+  let newmember;
+
+  newmember.name= member.name;
+  newmember.phone= member.name;
+  if(member.birth){
+    newmember.birth = member.birth.getTime();
+  }
+  else{
+    newmember.birth = undefined;
+  }
+  newmember.memo= member.memo;
+  newmember.point= member.point;
+
+  return newmember;
+}
+
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save',function(req,res){
     console.log('a');
@@ -17,7 +34,7 @@ router.post('/save',function(req,res){
     conn().query(sql, [phone],function(err, member, fields){
         if(err){
             console.log(err);
-            return res.status(500).json({error:err, message:'save 오류'});
+            res.status(500).json({error:err, message:'save 오류'});
         }
         // 폰 번호가 DB에 있으면 포인트 추가
         else {
@@ -26,7 +43,7 @@ router.post('/save',function(req,res){
                 conn().query(sql,[phone],function(err, result, fields){
                     if(err){
                         console.log(err);
-                        res.status(500).send('member 있을때err');
+                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'});
                     }
                     else{
                       let sql2='select * from customer where phone=?';
@@ -44,7 +61,7 @@ router.post('/save',function(req,res){
                 conn().query(sql, [phone, point],function(err,result,fields){
                     if(err){
                         console.log(err);
-                        res.status(500).send('멤버 없을때 err');
+                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 없을 때)'});
                     }
                     else{
                         // 적립
@@ -68,13 +85,9 @@ router.get('/all',(req,res) => {
     conn().query(sql, function(err,members,fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({error:err, message:'전체 조회 오류'});
         }
         else{
-            for(let i of members) {
-                if(i.birth)
-                    i.birth = i.birth.getTime();
-            }
             res.json({list:members});
         }
     });
@@ -85,8 +98,14 @@ router.post('/delete',function(req,res){
     let phone=req.body.phone;
     let sql='delete from customer where phone=?';
     conn().query(sql,[phone],function(err,result){
-        //삭제완료
-        res.json({success:true})
+      if(err){
+          console.log(err);
+          res.status(500).json({error:err, message:'삭제 오류'});
+      }
+      //삭제 완료
+      else{
+          res.json({success:true})
+      }
     });
 });
 
@@ -94,7 +113,12 @@ router.post('/delete',function(req,res){
 router.post('/edit',function(req,res){
     let point = req.body.point;
     let phone = req.body.phone;
-    let birth = req.body.birth ? new Date(req.body.birth) : undefined;
+    let birth;
+    if(req.body.birth){
+      birth = new date(req.body.birth);
+    }else{
+      birth = undefined;
+    };
     let name = req.body.name;
     let memo = req.body.memo;
 
@@ -102,7 +126,7 @@ router.post('/edit',function(req,res){
     conn().query(sql,[point,birth,name,memo,phone],function(err, result, fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({error:err, message:'Edit DB query 오류'});
         }
         else{
             res.json({success:true});
@@ -117,11 +141,10 @@ router.get('/:phone',function(req,res){
     conn().query(sql,[phone],function(err,member,fields){
         if(err){
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({error:err, message:'개별 조회 query 오류'});
         }
         else{
-            res.json(member[0]);
-            //res.send({phone:member[0].phone, point:member[0].point});
+            res.json(changedate(member[0]));
         }
     })
 });
