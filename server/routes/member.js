@@ -9,10 +9,11 @@ const conn = mysql.getConnection;
 
 
 function changedate(member){
-  let newmember;
+
+  let newmember={};
 
   newmember.name= member.name;
-  newmember.phone= member.name;
+  newmember.phone= member.phone;
   if(member.birth){
     newmember.birth = member.birth.getTime();
   }
@@ -143,7 +144,7 @@ router.get('/:phone',function(req,res){
             res.status(500).json({error:err, message:'개별 조회 query 오류'});
         }
         else{
-            res.json(member[0]);
+            res.json(changedate(member[0]));
         }
     })
 });
