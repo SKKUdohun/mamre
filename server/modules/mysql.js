@@ -22,7 +22,7 @@ function makeConnection(params) {
         connectionInfo = params;
     }
 
-    connection = mysql.createConnection(connectionInfo);
+    connection = mysql.createPool(connectionInfo);
 
     connection.connect((err) => {
         if(err) {
@@ -33,7 +33,6 @@ function makeConnection(params) {
 
     connection.on('error', (err) => {
         if(err.code === 'PROTOCOL_CONNECTION_LOST')
-            makeConnection(params);
         else
             throw err;
     });
