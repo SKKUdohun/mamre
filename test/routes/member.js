@@ -40,7 +40,7 @@ describe('Server API Test', function() {
             //end는 response 객체가 담김
             chai.request(server)
                 .post('/api/member/save')
-                .send({'phone':'12345678901'})
+                .send({'phone':'01030261963'})
                 .end(function(err, res) {
                     //json 데이터를 요청했으니 res.body가 존재해야함
                     should.exist(res.body);
@@ -49,7 +49,7 @@ describe('Server API Test', function() {
                     //res.body는 json 객체
                     res.body.should.be.a('object');
                     //res.body는 phone 프로퍼티를 가져야하고 값이 12345678901
-                    res.body.should.have.property('phone').eql('12345678901');
+                    res.body.should.have.property('phone').eql('01030261963');
                     //res.body는 point 프로퍼티를 가져야하고 값이 1
                     res.body.should.have.property('point').eql(1);
                     done();
@@ -58,19 +58,19 @@ describe('Server API Test', function() {
         it('should add 1 point to member', function(done) {
             chai.request(server)
                 .post('/api/member/save')
-                .send({'phone':'12345678901'})
+                .send({'phone':'01030261963'})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('phone').eql('12345678901');
+                    res.body.should.have.property('phone').eql('01030261963');
                     res.body.should.have.property('point').eql(2);
                     done();
                 });
         });
         it('should return a member', function(done) {
             chai.request(server)
-                .get('/api/member/12345678901')
+                .get('/api/member/01030261963')
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
@@ -81,7 +81,7 @@ describe('Server API Test', function() {
         it('should edit a member', function(done) {
             chai.request(server)
                 .post('/api/member/edit')
-                .send({'phone':'12345678901','point':10,'name':'test'})
+                .send({'phone':'01030261963','point':10,'name':'test'})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
@@ -92,12 +92,12 @@ describe('Server API Test', function() {
         });
         it('should return edited member', function(done) {
             chai.request(server)
-                .get('/api/member/12345678901')
+                .get('/api/member/01030261963')
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('phone').eql('12345678901');
+                    res.body.should.have.property('phone').eql('01030261963');
                     res.body.should.have.property('point').eql(10);
                     res.body.should.have.property('name').eql('test');
                     done();
@@ -115,10 +115,24 @@ describe('Server API Test', function() {
                     done();
                 });
         });
+
+        it('should test a member', function(done) {
+            chai.request(server)
+                .post('/api/member/test')
+                .send({'phone':'01030261963'})
+                .end(function(err, res) {
+                    should.exist(res.body);
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('success').eql(true);
+                    done();
+                });
+        });
+
         it('should delete a member', function(done) {
             chai.request(server)
                 .post('/api/member/delete')
-                .send({'phone':'12345678901'})
+                .send({'phone':'01030261963'})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
@@ -129,53 +143,6 @@ describe('Server API Test', function() {
         });
 
 
-        //********************** Error Test case *********************//
-        it('Too long number', function (done) {
-            chai.request(server)
-                .post('/api/member/save')
-                .send({'phone': '1029322930921'})
-                .end(function (err, res) {
-                    should.exist(res.body);
-                    res.should.have.status(500);
-                    res.body.should.be.a('object');
-                    //res.body.should.have.property('message').eql('save 오류');
-                    done();
-                });
-        });
-        it('Wrong phone insert type', function (done) {
-            chai.request(server)
-                .post('/api/member/save')
-                .send({'phone': '293*2930921'})
-                .end(function (err, res) {
-                    should.exist(res.body);
-                    res.should.have.status(500);
-                    res.body.should.be.a('object');
-                    done();
-                });
-        });
-        it('No information', function (done) {
-            chai.request(server)
-                .post('/api/member/save')
-                .send({'phone': ''})
-                .end(function (err, res) {
-                    should.exist(res.body);
-                    res.should.have.status(500);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('message').eql('save 오류');
-                    done();
-                });
-        });
-        it('Searching wrong number', function (done) { // /:phone error
-            chai.request(server)
-                .get('/api/member/******')
-                .end(function (err, res) {
-                    should.exist(res.body);
-                    res.should.have.status(500);
-                    res.body.should.be.a('object');
-                    done();
-                });
-        });
-        //****************************************************************//
     });
     after(function() {
         mysql.getConnection().end();

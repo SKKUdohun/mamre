@@ -70,7 +70,6 @@ router.post('/save',function(req,res){
 
                           res.json(member[0]);
                         });
-
                     }
                 });
             }
@@ -144,7 +143,7 @@ router.get('/:phone',function(req,res){
             res.status(500).json({error:err, message:'개별 조회 query 오류'});
         }
         else{
-            res.json(changedate(member[0]));
+            res.json(member[0]);
         }
     })
 });
