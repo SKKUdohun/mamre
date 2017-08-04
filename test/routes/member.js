@@ -26,7 +26,6 @@ describe('Server API Test', function() {
             password : configure.DB_PASSWORD,
             database : configure.DB_NAME
         });
-
     });
 
     //테스트 줄기 생성
