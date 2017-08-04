@@ -98,7 +98,7 @@ describe('Server API Test', function() {
                     should.exist(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('phone').eql('12345678901');
+                    res.body.should.have.property('phone').eql('01030261963');
                     res.body.should.have.property('point').eql(10);
                     res.body.should.have.property('name').eql('test');
                     done();
