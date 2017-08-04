@@ -60,6 +60,7 @@ function makeConnection(params) {
     connection = _mysql2.default.createConnection(connectionInfo);
 
     connection.connect(function (err) {
+        console.log('DB 연결완료');
         if (err) {
             console.log('error when connecting to db :', err);
             setTimeout(function () {
@@ -69,7 +70,8 @@ function makeConnection(params) {
     });
 
     connection.on('error', function (err) {
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') makeConnection(params);else throw err;
+        console.log("ERRR");
+        if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') makeConnection(params);else throw err;
     });
 
     conn = connection;

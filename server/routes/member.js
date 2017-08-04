@@ -17,7 +17,7 @@ router.post('/save',function(req,res){
     conn().query(sql, [phone],function(err, member, fields){
         if(err){
             console.log(err);
-            res.status(500).json({error:err, message:'save 오류'});
+            return res.status(500).json({error:err, message:'save 오류'});
         }
         // 폰 번호가 DB에 있으면 포인트 추가
         else {
@@ -71,6 +71,10 @@ router.get('/all',(req,res) => {
             res.status(500).send('Internal Server Error');
         }
         else{
+            for(let i of members) {
+                if(i.birth)
+                    i.birth = i.birth.getTime();
+            }
             res.json({list:members});
         }
     });
@@ -90,7 +94,7 @@ router.post('/delete',function(req,res){
 router.post('/edit',function(req,res){
     let point = req.body.point;
     let phone = req.body.phone;
-    let birth = req.body.birth;
+    let birth = req.body.birth ? new Date(req.body.birth) : undefined;
     let name = req.body.name;
     let memo = req.body.memo;
 

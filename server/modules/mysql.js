@@ -25,6 +25,7 @@ function makeConnection(params) {
     connection = mysql.createConnection(connectionInfo);
 
     connection.connect((err) => {
+        console.log('DB 연결완료');
         if(err) {
             console.log('error when connecting to db :', err);
             setTimeout(()=>{makeConnection(params)}, 2000);
@@ -32,7 +33,8 @@ function makeConnection(params) {
     });
 
     connection.on('error', (err) => {
-        if(err.code === 'PROTOCOL_CONNECTION_LOST')
+        console.log("ERRR");
+        if(err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET')
             makeConnection(params);
         else
             throw err;

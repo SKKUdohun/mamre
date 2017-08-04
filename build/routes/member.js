@@ -25,7 +25,7 @@ router.post('/save', function (req, res) {
     conn().query(sql, [phone], function (err, member, fields) {
         if (err) {
             console.log(err);
-            res.status(500).json({ error: err, message: 'save 오류' });
+            return res.status(500).json({ error: err, message: 'save 오류' });
         }
         // 폰 번호가 DB에 있으면 포인트 추가
         else {
@@ -75,6 +75,31 @@ router.get('/all', function (req, res) {
             console.log(err);
             res.status(500).send('Internal Server Error');
         } else {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = members[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var i = _step.value;
+
+                    if (i.birth) i.birth = i.birth.getTime();
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
             res.json({ list: members });
         }
     });
@@ -94,7 +119,7 @@ router.post('/delete', function (req, res) {
 router.post('/edit', function (req, res) {
     var point = req.body.point;
     var phone = req.body.phone;
-    var birth = req.body.birth;
+    var birth = req.body.birth ? new Date(req.body.birth) : undefined;
     var name = req.body.name;
     var memo = req.body.memo;
 
@@ -104,7 +129,7 @@ router.post('/edit', function (req, res) {
             console.log(err);
             res.status(500).send('Internal Server Error');
         } else {
-            res.send('edit complete');
+            res.json({ success: true });
         }
     });
 });
