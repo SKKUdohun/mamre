@@ -1,4 +1,4 @@
-this.VALUE=1;
+/*this.VALUE=1;
 const A = function(){
   console.log(this.VALUE);
 }
@@ -20,3 +20,4 @@ function init(){
 }
 
 init();
+*/

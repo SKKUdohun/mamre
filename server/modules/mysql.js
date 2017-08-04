@@ -24,18 +24,23 @@ function makeConnection(params) {
 
     connection = mysql.createPool(connectionInfo);
 
-    connection.connect((err) => {
+
+    /*connection.connect((err) => {
         if(err) {
             console.log('error when connecting to db :', err);
             setTimeout(()=>{makeConnection(params)}, 2000);
         }
     });
-
+    */
+    /*
     connection.on('error', (err) => {
         if(err.code === 'PROTOCOL_CONNECTION_LOST')
-        else
+
+        else{
             throw err;
+        }
     });
+    */
 
     conn = connection;
 
