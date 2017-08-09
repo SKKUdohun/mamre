@@ -30,52 +30,60 @@ function changedate(member){
 router.post('/save',function(req,res){
     console.log('a');
     let phone = req.body.phone;
-    let yesno = 0;
-    let sql = 'select * from customer where phone=?';
-    conn().query(sql, [phone],function(err, member, fields){
-        if(err){
-            console.log(err);
-            res.status(500).json({error:err, message:'save 오류'});
-        }
-        // 폰 번호가 DB에 있으면 포인트 추가
-        else {
-            if(member.length===1){
-                let sql='update customer set point = point + 1 where phone = ?';
-                conn().query(sql,[phone],function(err, result, fields){
-                    if(err){
-                        console.log(err);
-                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'});
-                    }
-                    else{
-                      let sql2='select * from customer where phone=?';
-                      conn().query(sql2,[phone],function(err, member,fields){
-
-                        res.json(member[0]);
-                      });
-                    }
-                });
-            }
-            // 폰 번호가 DB에 없으면 회원 등록, 포인트 1 적립
-            else{
-                let point = 1;
-                let sql = 'insert into customer (phone, point) values (?,?)';
-                conn().query(sql, [phone, point],function(err,result,fields){
-                    if(err){
-                        console.log(err);
-                        res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 없을 때)'});
-                    }
-                    else{
-                        // 적립
+    if(isNaN(phone)) {
+      res.status(500).json({error:err,message:'phone 입력값이 숫자가 아닙니다.'});
+    }else if(phone.length!=11 ) {
+      res.status(500).json({error:err,message:'phone 입력값이 11자리가 아닙니다.'});
+    }
+    // phone 형식이 제대로 들어오면
+    else {
+      let yesno = 0;
+      let sql = 'select * from customer where phone=?';
+      conn().query(sql, [phone],function(err, member, fields){
+          if(err){
+              console.log(err);
+              res.status(500).json({error:err, message:'save 오류'});
+          }
+          // 폰 번호가 DB에 있으면 포인트 추가
+          else {
+              if(member.length===1){
+                  let sql='update customer set point = point + 1 where phone = ?';
+                  conn().query(sql,[phone],function(err, result, fields){
+                      if(err){
+                          console.log(err);
+                          res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'});
+                      }
+                      else{
                         let sql2='select * from customer where phone=?';
                         conn().query(sql2,[phone],function(err, member,fields){
 
                           res.json(member[0]);
                         });
-                    }
-                });
-            }
-        }
-    });
+                      }
+                  });
+              }
+              // 폰 번호가 DB에 없으면 회원 등록, 포인트 1 적립
+              else{
+                  let point = 1;
+                  let sql = 'insert into customer (phone, point) values (?,?)';
+                  conn().query(sql, [phone, point],function(err,result,fields){
+                      if(err){
+                          console.log(err);
+                          res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 없을 때)'});
+                      }
+                      else{
+                          // 적립
+                          let sql2='select * from customer where phone=?';
+                          conn().query(sql2,[phone],function(err, member,fields){
+
+                            res.json(member[0]);
+                          });
+                      }
+                  });
+              }
+          }
+      });
+    }
 });
 
 // 전화번호 정보 전체 조회
@@ -111,8 +119,16 @@ router.post('/delete',function(req,res){
 
 // 회원정보 수정 : 포인트 변경, 이름, 생일, 메모  변경
 router.post('/edit',function(req,res){
+  let phone = req.body.phone;
+  if(isNaN(phone)) {
+    res.status(500).json({error:err,message:'phone 입력값이 숫자가 아닙니다.'});
+  }else if(phone.length!=11 ) {
+    res.status(500).json({error:err,message:'phone 입력값이 11자리가 아닙니다.'});
+  } else {
+
+    // phone 형식이 제대로 들어오면 실행될 기능들
     let point = req.body.point;
-    let phone = req.body.phone;
+
     let birth;
     if(req.body.birth){
       birth = new Date(req.body.birth)
@@ -132,6 +148,7 @@ router.post('/edit',function(req,res){
             res.json({success:true});
         }
     });
+  }
 });
 
 // 전화번호 정보 개별 조회
