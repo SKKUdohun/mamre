@@ -172,7 +172,7 @@ router.post('/use',(req,res)=>{
           }
           // 포인트가 usedPoint 보다 적을경우
           else{
-            res.status(500),json({error:err, message:'포인트가 부족합니다.'});
+            res.status(500).json({error:err, message:'포인트가 부족합니다.'});
           }
         }
         else{
