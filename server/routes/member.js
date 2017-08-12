@@ -30,7 +30,7 @@ function changedate(member){
 router.post('/save',function(req,res){
     console.log('a');
     let phone = req.body.phone;
-    let datetime = req.body.datetime;
+    let datetime = new Date(req.body.datetime);
     if(isNaN(phone)) {
       res.status(500).json({error:err,message:'phone 입력값이 숫자가 아닙니다.'});
     }else if(phone.length!=11 ) {
@@ -138,8 +138,8 @@ router.post('/delete',function(req,res){
 router.post('/use',(req,res)=>{
     let phone = req.body.phone;
     let usedPoint = req.body.usedPoint;
-    let datetime = req.body.datetime;
-    let newPoint;
+    let datetime = new Date(req.body.datetime);
+    let newPt;
     let sql = 'select * from customer where phone = ?';
     conn().query(sql,[phone],function(err,member,fields){
       if(err){
@@ -209,7 +209,7 @@ router.post('/edit',function(req,res){
     }else{
       pointChange=0;
     }
-    let datetime = req.body.datetime;
+    let datetime = new Date(req.body.datetime);
 
     let sql = 'update customer set point= point + ?,birth =?,name=?, memo = ?  where phone = ?';
     let sql_history = 'insert into history (datetime, phone, point ,pointChange, mode) values(?, ?, ?,?,?)';
@@ -221,7 +221,7 @@ router.post('/edit',function(req,res){
         }
         else{
           if(pointChange!=0){
-            conn().query(sql_history, [datetime, phone, point, pointChange, 2], function(err,history,fields){
+            conn().query(sql_history, [datetime, phone, result[0].point, pointChange, 2], function(err,history,fields){
               if(err){
                 console.log(err);
                 res.status(500).json({error:err, message:'History insert 오류'});

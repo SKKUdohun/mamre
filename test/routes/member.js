@@ -41,7 +41,7 @@ describe('Server API Test', function() {
             //end는 response 객체가 담김
             chai.request(server)
                 .post('/api/member/save')
-                .send({'phone':'01030261963'})
+                .send({'phone':'01030261963','datetime':'20170812'})
                 .end(function(err, res) {
                     //json 데이터를 요청했으니 res.body가 존재해야함
                     should.exist(res.body);
@@ -53,6 +53,8 @@ describe('Server API Test', function() {
                     res.body.should.have.property('phone').eql('01030261963');
                     //res.body는 point 프로퍼티를 가져야하고 값이 1
                     res.body.should.have.property('point').eql(1);
+                    //res.body는 datetime 프로퍼티를 가져야하고 값이 20170812
+                    res.body.should.have.property('datetime').eql('20170812');
                     done();
                 });
         });
@@ -117,7 +119,7 @@ describe('Server API Test', function() {
                 });
         });
 
-        
+
 
         it('should delete a member', function(done) {
             chai.request(server)
