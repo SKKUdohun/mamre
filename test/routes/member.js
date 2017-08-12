@@ -88,11 +88,12 @@ describe('Server API Test', function() {
                 });
         });
 
-        /*
+
         it('should edit a member', function(done) {
+          let now = new Date().getTime();
             chai.request(server)
                 .post('/api/member/edit')
-                .send({'phone':'01012345678','pointChange':10,'name':'test'})
+                .send({'phone':'01087654321','pointChange':-1,'name':'test', 'datetime':now})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
@@ -101,28 +102,28 @@ describe('Server API Test', function() {
                     done();
                 });
         });
-        */
 
-        /*
+
+
         it('should return edited member', function(done) {
             chai.request(server)
-                .get('/api/member/01012345678')
+                .get('/api/member/01087654321')
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('phone').eql('01012345678');
-                    res.body.should.have.property('point').eql(10);
+                    res.body.should.have.property('phone').eql('01087654321');
+                    res.body.should.have.property('point').eql(1);
                     res.body.should.have.property('name').eql('test');
                     done();
                 });
         });
-        */
+
         it('should return rest of points', function(done){
           let now = new Date().getTime();
           chai.request(server)
             .post('/api/member/use')
-            .send({'phone':'01087654321','usedPoint':2,'datetime':now})
+            .send({'phone':'01087654321','usedPoint':1,'datetime':now})
             .end(function(err,res){
               should.exist(res.body);
               res.should.have.status(200);

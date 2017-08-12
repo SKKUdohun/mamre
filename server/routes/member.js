@@ -221,12 +221,15 @@ router.post('/edit',function(req,res){
         }
         else{
           if(pointChange!=0){
-            conn().query(sql_history, [datetime, phone, result[0].point, pointChange, 2], function(err,history,fields){
-              if(err){
-                console.log(err);
-                res.status(500).json({error:err, message:'History insert 오류'});
-              }
-            })
+            let sql_getpoint = 'select * from customer where phone=?';
+            conn().query(sql_getpoint,[phone],function(err,getpoint,fields){
+              conn().query(sql_history, [datetime, phone, getpoint[0].point, pointChange, 2], function(err,history,fields){
+                if(err){
+                  console.log(err);
+                  res.status(500).json({error:err, message:'History insert 오류'});
+                }
+              })
+            });
           }
             res.json({success:true});
         }
