@@ -35,13 +35,15 @@ describe('Server API Test', function() {
 
         //직접적으로 시행되는 단위 테스트
         //it의 문자열은 출력용
+
         it('should insert new member with 1 point', function(done) {
             //server를 실행시키며 post 요청을 보냄
             //json 객체는 send를 통해 설정
             //end는 response 객체가 담김
+            let now = new Date().getTime();
             chai.request(server)
                 .post('/api/member/save')
-                .send({'phone':'01030261963','datetime':'20170812'})
+                .send({'phone':'01087654321','datetime':now})
                 .end(function(err, res) {
                     //json 데이터를 요청했으니 res.body가 존재해야함
                     should.exist(res.body);
@@ -50,30 +52,34 @@ describe('Server API Test', function() {
                     //res.body는 json 객체
                     res.body.should.be.a('object');
                     //res.body는 phone 프로퍼티를 가져야하고 값이 12345678901
-                    res.body.should.have.property('phone').eql('01030261963');
+                    res.body.should.have.property('phone').eql('01087654321');
                     //res.body는 point 프로퍼티를 가져야하고 값이 1
                     res.body.should.have.property('point').eql(1);
-                    //res.body는 datetime 프로퍼티를 가져야하고 값이 20170812
-                    res.body.should.have.property('datetime').eql('20170812');
                     done();
                 });
         });
+
+
         it('should add 1 point to member', function(done) {
+            let now = new Date().getTime();
             chai.request(server)
                 .post('/api/member/save')
-                .send({'phone':'01030261963'})
+                .send({'phone':'01087654321','datetime':now})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('phone').eql('01030261963');
+                    res.body.should.have.property('phone').eql('01087654321');
                     res.body.should.have.property('point').eql(2);
                     done();
                 });
         });
+
+
+
         it('should return a member', function(done) {
             chai.request(server)
-                .get('/api/member/01030261963')
+                .get('/api/member/01087654321')
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
@@ -81,10 +87,12 @@ describe('Server API Test', function() {
                     done();
                 });
         });
+
+        /*
         it('should edit a member', function(done) {
             chai.request(server)
                 .post('/api/member/edit')
-                .send({'phone':'01030261963','point':10,'name':'test'})
+                .send({'phone':'01012345678','pointChange':10,'name':'test'})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
@@ -93,19 +101,37 @@ describe('Server API Test', function() {
                     done();
                 });
         });
+        */
+
+        /*
         it('should return edited member', function(done) {
             chai.request(server)
-                .get('/api/member/01030261963')
+                .get('/api/member/01012345678')
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('phone').eql('01030261963');
+                    res.body.should.have.property('phone').eql('01012345678');
                     res.body.should.have.property('point').eql(10);
                     res.body.should.have.property('name').eql('test');
                     done();
                 });
         });
+        */
+        it('should return rest of points', function(done){
+          let now = new Date().getTime();
+          chai.request(server)
+            .post('/api/member/use')
+            .send({'phone':'01087654321','usedPoint':2,'datetime':now})
+            .end(function(err,res){
+              should.exist(res.body);
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('newPoint').eql(0);
+              done();
+            });
+        });
+
         it('should return an array of members', function(done) {
             chai.request(server)
                 .get('/api/member/all')
@@ -124,7 +150,7 @@ describe('Server API Test', function() {
         it('should delete a member', function(done) {
             chai.request(server)
                 .post('/api/member/delete')
-                .send({'phone':'01030261963'})
+                .send({'phone':'01087654321'})
                 .end(function(err, res) {
                     should.exist(res.body);
                     res.should.have.status(200);

@@ -154,7 +154,7 @@ router.post('/use',(req,res)=>{
             newPt = member[0].point - usedPoint;
             let sql_use = 'update customer set point = ? where phone = ?'
             let sql_history = 'insert into history (datetime, phone, point ,pointChange, mode) values(?, ?, ?,?,?)';
-            conn().query(sql,[newPt, phone],function(err,result,fields){
+            conn().query(sql_use,[newPt, phone],function(err,result,fields){
               if(err){
                 console.log(err);
                 res.staus(500).json({error:err, message:'update query 오류'})
