@@ -116,19 +116,6 @@ describe('Server API Test', function() {
                 });
         });
 
-        it('should test a member', function(done) {
-            chai.request(server)
-                .post('/api/member/test')
-                .send({'phone':'01030261963'})
-                .end(function(err, res) {
-                    should.exist(res.body);
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('success').eql(true);
-                    done();
-                });
-        });
-
         it('should delete a member', function(done) {
             chai.request(server)
                 .post('/api/member/delete')

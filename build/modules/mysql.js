@@ -57,22 +57,23 @@ function makeConnection(params) {
         connectionInfo = params;
     }
 
-    connection = _mysql2.default.createConnection(connectionInfo);
+    connection = _mysql2.default.createPool(connectionInfo);
 
-    connection.connect(function (err) {
-        console.log('DB 연결완료');
-        if (err) {
+    /*connection.connect((err) => {
+        if(err) {
             console.log('error when connecting to db :', err);
-            setTimeout(function () {
-                makeConnection(params);
-            }, 2000);
+            setTimeout(()=>{makeConnection(params)}, 2000);
         }
     });
-
-    connection.on('error', function (err) {
-        console.log("ERRR");
-        if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') makeConnection(params);else throw err;
+    */
+    /*
+    connection.on('error', (err) => {
+        if(err.code === 'PROTOCOL_CONNECTION_LOST')
+          else{
+            throw err;
+        }
     });
+    */
 
     conn = connection;
 }

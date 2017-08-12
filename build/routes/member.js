@@ -16,16 +16,33 @@ var router = _express2.default.Router();
 
 var conn = _modules.mysql.getConnection;
 
+function changedate(member) {
+    var newmember = {};
+
+    newmember.name = member.name;
+    newmember.phone = member.name;
+
+    if (member.birth) {
+        newmember.birth = member.birth.getTime();
+    } else {
+        newmember.birth = undefined;
+    }
+
+    newmember.memo = member.memo;
+    newmember.point = member.point;
+
+    return newmember;
+}
+
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save', function (req, res) {
-    console.log('a');
     var phone = req.body.phone;
     var yesno = 0;
     var sql = 'select * from customer where phone=?';
     conn().query(sql, [phone], function (err, member, fields) {
         if (err) {
             console.log(err);
-            return res.status(500).json({ error: err, message: 'save 오류' });
+            res.status(500).json({ error: err, message: 'save 오류' });
         }
         // 폰 번호가 DB에 있으면 포인트 추가
         else {
@@ -34,7 +51,7 @@ router.post('/save', function (req, res) {
                     conn().query(_sql, [phone], function (err, result, fields) {
                         if (err) {
                             console.log(err);
-                            res.status(500).send('member 있을때err');
+                            res.status(500).json({ error: err, message: 'DB query 실행 오류(phone 정보 존재 할 때)' });
                         } else {
                             var sql2 = 'select * from customer where phone=?';
                             conn().query(sql2, [phone], function (err, member, fields) {
@@ -51,7 +68,7 @@ router.post('/save', function (req, res) {
                         conn().query(_sql2, [phone, point], function (err, result, fields) {
                             if (err) {
                                 console.log(err);
-                                res.status(500).send('멤버 없을때 err');
+                                res.status(500).json({ error: err, message: 'DB query 실행 오류(phone 정보 없을 때)' });
                             } else {
                                 // 적립
                                 var sql2 = 'select * from customer where phone=?';
@@ -73,33 +90,8 @@ router.get('/all', function (req, res) {
     conn().query(sql, function (err, members, fields) {
         if (err) {
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({ error: err, message: '전체 조회 오류' });
         } else {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = members[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var i = _step.value;
-
-                    if (i.birth) i.birth = i.birth.getTime();
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
             res.json({ list: members });
         }
     });
@@ -110,8 +102,14 @@ router.post('/delete', function (req, res) {
     var phone = req.body.phone;
     var sql = 'delete from customer where phone=?';
     conn().query(sql, [phone], function (err, result) {
-        //삭제완료
-        res.json({ success: true });
+        if (err) {
+            console.log(err);
+            res.status(500).json({ error: err, message: '삭제 오류' });
+        }
+        //삭제 완료
+        else {
+                res.json({ success: true });
+            }
     });
 });
 
@@ -119,7 +117,9 @@ router.post('/delete', function (req, res) {
 router.post('/edit', function (req, res) {
     var point = req.body.point;
     var phone = req.body.phone;
-    var birth = req.body.birth ? new Date(req.body.birth) : undefined;
+    var birth = void 0;
+    if (req.body.birth) birth = new Date(req.body.birth);
+
     var name = req.body.name;
     var memo = req.body.memo;
 
@@ -127,7 +127,7 @@ router.post('/edit', function (req, res) {
     conn().query(sql, [point, birth, name, memo, phone], function (err, result, fields) {
         if (err) {
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({ error: err, message: 'Edit DB query 오류' });
         } else {
             res.json({ success: true });
         }
@@ -141,10 +141,9 @@ router.get('/:phone', function (req, res) {
     conn().query(sql, [phone], function (err, member, fields) {
         if (err) {
             console.log(err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).json({ error: err, message: '개별 조회 query 오류' });
         } else {
             res.json(member[0]);
-            //res.send({phone:member[0].phone, point:member[0].point});
         }
     });
 });

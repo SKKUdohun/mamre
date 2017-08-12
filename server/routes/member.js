@@ -9,16 +9,18 @@ const conn = mysql.getConnection;
 
 
 function changedate(member){
-  let newmember;
+  let newmember = {};
 
   newmember.name= member.name;
   newmember.phone= member.name;
+
   if(member.birth){
     newmember.birth = member.birth.getTime();
   }
   else{
     newmember.birth = undefined;
   }
+
   newmember.memo= member.memo;
   newmember.point= member.point;
 
@@ -27,7 +29,6 @@ function changedate(member){
 
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save',function(req,res){
-    console.log('a');
     let phone = req.body.phone;
     let yesno = 0;
     let sql = 'select * from customer where phone=?';
@@ -113,11 +114,9 @@ router.post('/edit',function(req,res){
     let point = req.body.point;
     let phone = req.body.phone;
     let birth;
-    if(req.body.birth){
-      birth = new date(req.body.birth);
-    }else{
-      birth = undefined;
-    };
+    if(req.body.birth)
+      birth = new Date(req.body.birth);
+
     let name = req.body.name;
     let memo = req.body.memo;
 
