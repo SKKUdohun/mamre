@@ -33,7 +33,7 @@ router.get('/:phone', function(req,res){
       res.status(500).json({error:err, message:'개별 조회 query 오류'});
     }
     else{
-      res.json(history[0]);
+      res.json({list:history});
     }
   })
 });

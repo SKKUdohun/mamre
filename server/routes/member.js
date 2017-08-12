@@ -55,11 +55,11 @@ router.post('/save',function(req,res){
                           res.status(500).json({error:err, message:'DB query 실행 오류(phone 정보 존재 할 때)'});
                       }
                       else{
-                        let sql_history = 'insert into history (datetime, phone, point, pointChange, mode) values(?, ?, ?, ?, ?)';
+                        let sql_history = 'insert into history (datetime, phone, point, mode) values(?,  ?, ?, ?)';
 
                         let sql2='select * from customer where phone=?';
                         conn().query(sql2,[phone],function(err, member,fields){
-                          conn().query(sql_history, [datetime, phone,member[0].point, 1, 0],function(err, history, fields){
+                          conn().query(sql_history, [datetime, phone,member[0].point,  0],function(err, history, fields){
                             if(err){
                               console.log(err);
                               res.status(500).json({error:err, message:'History insert 오류'});
@@ -82,10 +82,10 @@ router.post('/save',function(req,res){
                       }
                       else{
                           // 적립
-                          let sql_history = 'insert into history (datetime, phone, point ,pointChange, mode) values(?, ?, ?,?,?)';
+                          let sql_history = 'insert into history (datetime, phone, point , mode) values(?, ?,?,?)';
                           let sql2='select * from customer where phone=?';
                           conn().query(sql2,[phone],function(err, member,fields){
-                            conn().query(sql_history,[datetime,phone,member[0].point,1,0],function(err,history,fields){
+                            conn().query(sql_history,[datetime,phone,member[0].point,0],function(err,history,fields){
                               if(err){
                                 console.log(err);
                                 res.status(500).json({error:err, message:'History insert 오류'});
@@ -153,14 +153,14 @@ router.post('/use',(req,res)=>{
           if(member[0].point >= usedPoint){
             newPt = member[0].point - usedPoint;
             let sql_use = 'update customer set point = ? where phone = ?'
-            let sql_history = 'insert into history (datetime, phone, point ,pointChange, mode) values(?, ?, ?,?,?)';
+            let sql_history = 'insert into history (datetime, phone, point , mode) values(?, ?,?,?)';
             conn().query(sql_use,[newPt, phone],function(err,result,fields){
               if(err){
                 console.log(err);
                 res.staus(500).json({error:err, message:'update query 오류'})
               }
               else{
-                conn().query(sql_history,[datetime, phone, newPt, usedPoint, 1], function(err,history,fields){
+                conn().query(sql_history,[datetime, phone, newPt, 1], function(err,history,fields){
                   if(err){
                     console.log(err);
                     res.status(500).json({error:err, message:'history insert 오류'});
@@ -212,7 +212,7 @@ router.post('/edit',function(req,res){
     let datetime = new Date(req.body.datetime);
 
     let sql = 'update customer set point= point + ?,birth =?,name=?, memo = ?  where phone = ?';
-    let sql_history = 'insert into history (datetime, phone, point ,pointChange, mode) values(?, ?, ?,?,?)';
+    let sql_history = 'insert into history (datetime, phone, point , mode) values(?, ?,?,?)';
 
     conn().query(sql,[pointChange,birth,name,memo,phone],function(err, result, fields){
         if(err){
@@ -223,7 +223,7 @@ router.post('/edit',function(req,res){
           if(pointChange!=0){
             let sql_getpoint = 'select * from customer where phone=?';
             conn().query(sql_getpoint,[phone],function(err,getpoint,fields){
-              conn().query(sql_history, [datetime, phone, getpoint[0].point, pointChange, 2], function(err,history,fields){
+              conn().query(sql_history, [datetime, phone, getpoint[0].point, 2], function(err,history,fields){
                 if(err){
                   console.log(err);
                   res.status(500).json({error:err, message:'History insert 오류'});
