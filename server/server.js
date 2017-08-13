@@ -20,11 +20,7 @@ mysql.makeConnection({
     database : configure.DB_NAME
 });
 
-/*
-배포판이 아니면 HTTP 접근 제어 (CORS)를 허용한다.
- */
-if(configure.NODE_ENV !== 'production')
-    app.use(cors());
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
