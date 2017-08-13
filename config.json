@@ -1,5 +1,5 @@
 {
-  "DB_HOSTNAME" : "220.230.112.62",
+  "DB_HOSTNAME" : "localhost",
   "DB_USER" : "root",
   "DB_PASSWORD" : "E6He3n-JHq",
   "DB_NAME" : "mamre"

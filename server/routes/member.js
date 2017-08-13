@@ -28,7 +28,6 @@ function changedate(member){
 
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save',function(req,res){
-    console.log('a');
     let phone = req.body.phone;
     let datetime = new Date(req.body.datetime);
     if(isNaN(phone)) {
@@ -64,6 +63,7 @@ router.post('/save',function(req,res){
                               console.log(err);
                               res.status(500).json({error:err, message:'History insert 오류'});
                             }
+
                           });
                           res.json(member[0]);
                         });
@@ -157,7 +157,7 @@ router.post('/use',(req,res)=>{
             conn().query(sql_use,[newPt, phone],function(err,result,fields){
               if(err){
                 console.log(err);
-                res.staus(500).json({error:err, message:'update query 오류'})
+                res.status(500).json({error:err, message:'update query 오류'})
               }
               else{
                 conn().query(sql_history,[datetime, phone, newPt, 1], function(err,history,fields){
@@ -188,50 +188,38 @@ router.post('/edit',function(req,res){
   let phone = req.body.phone;
   if(isNaN(phone)) {
     res.status(500).json({error:err,message:'phone 입력값이 숫자가 아닙니다.'});
-  }else if(phone.length!=11 ) {
+  }else if(phone.length!==11 ) {
     res.status(500).json({error:err,message:'phone 입력값이 11자리가 아닙니다.'});
-  } else {
+  }else {
 
-    // phone 형식이 제대로 들어오면 실행될 기능들
-    //let point = req.body.point;
-    let birth;
-
-    if(req.body.birth){
-      birth = new Date(req.body.birth)
-    }else{
-      birth = undefined;
-    };
+    let point = req.body.point;
+    let birth = req.body.birth ? new Date(req.body.birth) : null;
     let name = req.body.name;
     let memo = req.body.memo;
-    let pointChange;
-    if(req.body.pointChange){
-      pointChange = req.body.pointChange
-    }else{
-      pointChange=0;
-    }
     let datetime = new Date(req.body.datetime);
 
-    let sql = 'update customer set point= point + ?,birth =?,name=?, memo = ?  where phone = ?';
+    let sql_getpoint = 'select * from customer where phone=?';
+    let sql = 'update customer set point=?,birth=?,name=?, memo=?  where phone = ?';
     let sql_history = 'insert into history (datetime, phone, point , mode) values(?, ?,?,?)';
 
-    conn().query(sql,[pointChange,birth,name,memo,phone],function(err, result, fields){
+    conn().query(sql_getpoint,[phone],function(err,getpoint,fields){
         if(err){
             console.log(err);
             res.status(500).json({error:err, message:'Edit DB query 오류'});
         }
         else{
-          if(pointChange!=0){
-            let sql_getpoint = 'select * from customer where phone=?';
-            conn().query(sql_getpoint,[phone],function(err,getpoint,fields){
-              conn().query(sql_history, [datetime, phone, getpoint[0].point, 2], function(err,history,fields){
-                if(err){
-                  console.log(err);
-                  res.status(500).json({error:err, message:'History insert 오류'});
-                }
-              })
+          conn().query(sql,[point,birth,name,memo,phone],function(err, result, fields){
+              if(getpoint[0].point!==point)
+                conn().query(sql_history, [datetime, phone, point, 2], function(err,history,fields){
+                  if(err){
+                    console.log(err);
+                    return res.status(500).json({error:err, message:'History insert 오류'});
+                  }
+                  return res.json({success:true});
+                });
+              else
+                return res.json({success:true});
             });
-          }
-            res.json({success:true});
         }
     });
   }
