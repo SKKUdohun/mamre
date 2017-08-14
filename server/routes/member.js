@@ -140,6 +140,7 @@ router.post('/use',(req,res)=>{
     let usedPoint = req.body.usedPoint;
     let datetime = new Date(req.body.datetime);
     let newPt;
+    let memo = req.body.memo;
     let sql = 'select * from customer where phone = ?';
     conn().query(sql,[phone],function(err,member,fields){
       if(err){
@@ -153,14 +154,14 @@ router.post('/use',(req,res)=>{
           if(member[0].point >= usedPoint){
             newPt = member[0].point - usedPoint;
             let sql_use = 'update customer set point = ? where phone = ?'
-            let sql_history = 'insert into history (datetime, phone, point , mode) values(?, ?,?,?)';
+            let sql_history = 'insert into history (datetime, phone, point , mode,memo) values(?, ?,?,?,?)';
             conn().query(sql_use,[newPt, phone],function(err,result,fields){
               if(err){
                 console.log(err);
                 res.status(500).json({error:err, message:'update query 오류'})
               }
               else{
-                conn().query(sql_history,[datetime, phone, newPt, 1], function(err,history,fields){
+                conn().query(sql_history,[datetime, phone, newPt, 1,memo], function(err,history,fields){
                   if(err){
                     console.log(err);
                     res.status(500).json({error:err, message:'history insert 오류'});
