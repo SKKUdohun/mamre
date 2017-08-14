@@ -43,10 +43,7 @@ _modules.mysql.makeConnection({
     database: _configure2.default.DB_NAME
 });
 
-/*
-배포판이 아니면 HTTP 접근 제어 (CORS)를 허용한다.
- */
-if (_configure2.default.NODE_ENV !== 'production') app.use((0, _cors2.default)());
+app.use((0, _cors2.default)());
 
 app.use(_bodyParser2.default.urlencoded({ extended: true }));
 app.use(_bodyParser2.default.json());

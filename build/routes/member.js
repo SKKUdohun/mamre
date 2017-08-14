@@ -35,7 +35,6 @@ function changedate(member) {
 
 // 번호 입력후 가입 or 포인트 적립
 router.post('/save', function (req, res) {
-  console.log('a');
   var phone = req.body.phone;
   var datetime = new Date(req.body.datetime);
   if (isNaN(phone)) {
